@@ -155,8 +155,10 @@ $("authForm").addEventListener("submit",async e=>{
  const email=$("aemail").value.trim(),password=$("apass").value,btn=$("authBtn");
  btn.disabled=true;$("amsg").textContent="Un instant…";
  if(mode==="signup"){
-  const {error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});
-  $("amsg").textContent=error?"Erreur : "+error.message:"Compte créé ! Ouvre l'e-mail que nous t'avons envoyé (vérifie aussi les spams) et appuie sur le lien de confirmation. Ensuite, connecte-toi.";
+  const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});
+  if(error)$("amsg").textContent="Erreur : "+error.message;
+  else if(data.session){$("authModal").classList.remove("open");$("authForm").reset();alert("Bienvenue sur KONEKTA !")}
+  else $("amsg").textContent="Compte créé ! Ouvre l'e-mail que nous t'avons envoyé (vérifie aussi les spams) et appuie sur le lien de confirmation. Ensuite, connecte-toi.";
  }else{
   const {error}=await sb.auth.signInWithPassword({email,password});
   if(error)$("amsg").textContent=/not confirmed/i.test(error.message)?"Confirme d'abord ton e-mail (vérifie aussi les spams).":"E-mail ou mot de passe incorrect.";
