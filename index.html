@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#123c35">
 <title>KONEKTA — Marché haïtien</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
 :root{--green:#123c35;--green2:#1e6656;--cream:#f6f4ed;--orange:#ffb454;--ink:#172521;--muted:#6c7772;--white:#fff;--line:#e4e8e2}
 *{box-sizing:border-box}
@@ -229,6 +233,7 @@ $("listingForm").addEventListener("submit",async e=>{
  btn.disabled=false;btn.textContent="Publier l'annonce";
 });
 load();
+if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
 </html>
