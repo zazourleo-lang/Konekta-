@@ -39,6 +39,7 @@ h2{font-size:19px;margin:0}.small{color:var(--muted);font-size:12px}
 .contact.del{background:#9b2c2c}
 .mini{border:0;background:none;color:var(--muted);font-size:11px;text-decoration:underline;padding:8px 0 0}
 .link{border:0;background:none;color:var(--green2);font-weight:700;text-decoration:underline;padding:8px 0}
+.vbadge{display:inline-block;margin-top:7px;background:#e3f0ff;color:#0b5cad;font-size:11px;font-weight:800;padding:3px 9px;border-radius:12px}
 .empty{grid-column:1/-1;text-align:center;background:white;border-radius:16px;padding:26px;color:var(--muted)}
 .bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;gap:8px;padding:9px 10px calc(9px + env(safe-area-inset-bottom));z-index:5}
 .navbtn{flex:1;max-width:220px;border:0;background:transparent;color:var(--muted);padding:8px 4px;border-radius:12px;font-size:12px;font-weight:700}
@@ -121,14 +122,14 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px 0}
 const sb=supabase.createClient("https://sywzvrtsbletixoxrjjt.supabase.co","sb_publishable_lkchHYAps-lYnGxZiVeg9w_DiXUEPnk");
 const $=id=>document.getElementById(id);
 const EMO={"Téléphones":"📱","Mode":"👟","Maison":"🏠","Électronique":"🎧","Beauté":"💄","Autres":"📦"};
-let user=null,listings=[],favs=new Set(),category="Tous",view="home",mode="login",editing=null;
+let user=null,listings=[],favs=new Set(),category="Tous",view="home",mode="login",editing=null,verified=new Set();
 const money=n=>new Intl.NumberFormat("fr-FR").format(n)+" G";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 async function load(){
  const {data,error}=await sb.from("listings").select("*").order("created_at",{ascending:false});
  if(error){$("products").innerHTML='<div class="empty"><strong>Impossible de charger les annonces</strong><p>Vérifie ta connexion et réessaie.</p></div>';return}
- listings=data;render();
+ listings=data;const {data:vs}=await sb.from("verified_sellers").select("user_id");verified=new Set((vs||[]).map(r=>r.user_id));render();
 }
 async function loadFavs(){
  favs=new Set();
@@ -142,7 +143,7 @@ function render(){
  $("count").textContent=data.length+" annonce"+(data.length>1?"s":"");
  $("products").innerHTML=data.length?data.map(p=>{
   const mine=user&&p.user_id===user.id;
-  return `<article class="card"><div class="photo">${p.image_url?`<img src="${esc(p.image_url)}" alt="" loading="lazy">`:esc(EMO[p.category]||"📦")}<button class="fav" data-fav="${p.id}" aria-label="Favori">${favs.has(p.id)?"❤️":"♡"}</button></div><div class="card-body"><div class="name">${esc(p.name)}</div><div class="price">${money(p.price)}</div><div class="location">📍 ${esc(p.location)}</div>${p.description?`<p class="small">${esc(p.description)}</p>`:""}<button class="contact" data-contact="${p.id}">Contacter le vendeur</button>${mine?`<button class="contact" style="background:var(--green2)" data-edit="${p.id}">Modifier mon annonce</button><button class="contact del" data-del="${p.id}">Supprimer mon annonce</button>`:`<button class="mini" data-rep="${p.id}">Signaler cette annonce</button>`}</div></article>`}).join(""):
+  return `<article class="card"><div class="photo">${p.image_url?`<img src="${esc(p.image_url)}" alt="" loading="lazy">`:esc(EMO[p.category]||"📦")}<button class="fav" data-fav="${p.id}" aria-label="Favori">${favs.has(p.id)?"❤️":"♡"}</button></div><div class="card-body"><div class="name">${esc(p.name)}</div><div class="price">${money(p.price)}</div><div class="location">📍 ${esc(p.location)}</div>${verified.has(p.user_id)?'<span class="vbadge">✔ Vendeur vérifié</span>':""}${p.description?`<p class="small">${esc(p.description)}</p>`:""}<button class="contact" data-contact="${p.id}">Contacter le vendeur</button>${mine?`<button class="contact" style="background:var(--green2)" data-edit="${p.id}">Modifier mon annonce</button><button class="contact del" data-del="${p.id}">Supprimer mon annonce</button>`:`<button class="mini" data-rep="${p.id}">Signaler cette annonce</button>`}</div></article>`}).join(""):
  `<div class="empty"><div style="font-size:30px">🔎</div><strong>Aucune annonce trouvée</strong><p>${view==="home"?"Sois le premier à publier une annonce !":"Rien à afficher ici pour l'instant."}</p></div>`;
 }
 
