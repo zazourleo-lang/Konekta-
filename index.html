@@ -23,6 +23,9 @@ header{background:var(--green);color:white;padding:18px 16px 22px;border-radius:
 .search-wrap{max-width:900px;margin:18px auto 0;display:flex;gap:8px}
 .search-wrap input{min-width:0;flex:1;border:0;border-radius:12px;padding:13px 14px;outline:none}
 .search-wrap button{border:0;border-radius:12px;background:var(--orange);padding:0 15px;font-weight:800;color:#33230f}
+.cur{max-width:900px;margin:12px auto 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:#d8e6df}
+.cur button{border:1px solid #ffffff40;background:transparent;color:#fff;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700}
+.cur button.on{background:var(--orange);color:#33230f;border-color:var(--orange)}
 main{max-width:900px;margin:0 auto;padding:18px 14px 90px}
 .section-head{display:flex;justify-content:space-between;align-items:center;margin:7px 0 12px;gap:8px}
 h2{font-size:19px;margin:0}.small{color:var(--muted);font-size:12px}
@@ -64,6 +67,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px 0}
   <div class="top"><div class="logo">KONEK<span>TA</span></div><div class="badge">🇭🇹 Le marché haïtien</div></div>
   <div class="hero"><h1>Ce que tu cherches, près ou loin.</h1><p>Découvre des produits proposés par des vendeurs en Haïti.</p></div>
   <div class="search-wrap"><input id="search" placeholder="Ex. téléphone, chaussures…" aria-label="Rechercher un produit"><button id="searchBtn">Chercher</button></div>
+  <div class="cur" id="curBar"><span>Prix affichés en :</span><button data-disp="HTG">G · Gourdes</button><button data-disp="USD">$ · Dollars</button></div>
 </header>
 <main>
   <div class="section-head"><h2 id="sectionTitle">À découvrir</h2><span class="small" id="count"></span><button class="chip" id="logout" hidden>Se déconnecter</button></div>
@@ -80,6 +84,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px 0}
   <div class="grid" id="products"></div>
   <div class="note" style="margin-top:18px">Vérifie toujours le produit, le vendeur et les conditions de paiement avant tout achat. Rencontre-toi dans un lieu sûr.</div>
   <div class="note" style="margin-top:12px;background:#e9f2ed;border-color:#cfe3d8;color:#123c35;text-align:center"><strong>Besoin d'aide ?</strong><br>Une question, un problème ou une idée ? Écris-nous sur WhatsApp.<a class="contact" style="display:block;text-decoration:none;text-align:center" href="https://wa.me/50941444209?text=Bonjour%20KONEKTA%2C%20j%27ai%20besoin%20d%27aide" target="_blank" rel="noopener">Sipò · Support WhatsApp</a></div>
+  <p class="small" id="rateNote" style="text-align:center;margin:14px 0 0"></p>
   <footer>KONEKTA · Une idée qui commence ici.</footer>
 </main>
 <nav class="bottom">
@@ -108,7 +113,8 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px 0}
   <form id="listingForm">
    <label for="pname">Nom du produit *</label><input class="field" id="pname" required minlength="2" maxlength="70" placeholder="Ex. Téléphone Samsung">
    <label for="pcat">Catégorie *</label><select class="field" id="pcat" required><option>Téléphones</option><option>Mode</option><option>Maison</option><option>Électronique</option><option>Beauté</option><option>Autres</option></select>
-   <label for="pprice">Prix en gourdes (HTG) *</label><input class="field" id="pprice" required type="number" min="1" step="1" placeholder="Ex. 12500">
+   <label for="pcur">Monnaie *</label><select class="field" id="pcur"><option value="HTG">Gourdes (G)</option><option value="USD">Dollars US ($)</option></select>
+   <label for="pprice">Prix *</label><input class="field" id="pprice" required type="number" min="0.01" step="0.01" placeholder="Ex. 12500 en gourdes ou 25 en dollars">
    <label for="plocation">Zone du vendeur *</label><input class="field" id="plocation" required minlength="2" maxlength="60" placeholder="Ex. Nerette, Pétion-Ville">
    <label for="pcontact">Contact (WhatsApp ou téléphone) *</label><input class="field" id="pcontact" required minlength="5" maxlength="30" placeholder="Ex. +509 …">
    <label for="pdesc">Description</label><textarea class="field" id="pdesc" maxlength="350" placeholder="État, taille, détails utiles…"></textarea>
@@ -125,13 +131,19 @@ const sb=supabase.createClient("https://sywzvrtsbletixoxrjjt.supabase.co","sb_pu
 const $=id=>document.getElementById(id);
 const EMO={"Téléphones":"📱","Mode":"👟","Maison":"🏠","Électronique":"🎧","Beauté":"💄","Autres":"📦"};
 let user=null,listings=[],favs=new Set(),category="Tous",view="home",mode="login",editing=null,verified=new Set(),stats=null;
-const money=n=>new Intl.NumberFormat("fr-FR").format(n)+" G";
+let rate=131;
+const fmt=(n,c)=>c==="USD"?"$"+new Intl.NumberFormat("fr-FR",{maximumFractionDigits:2}).format(n):new Intl.NumberFormat("fr-FR",{maximumFractionDigits:0}).format(n)+" G";
+const money=p=>fmt(p.price,p.currency||"HTG");
+let disp="HTG";try{disp=localStorage.getItem("kdisp")==="USD"?"USD":"HTG"}catch(e){}
+const shown=p=>{const c=p.currency||"HTG";return c===disp?fmt(p.price,c):"≈ "+fmt(c==="USD"?p.price*rate:p.price/rate,disp)};
+const sub=p=>(p.currency||"HTG")===disp?"":"Prix du vendeur : "+money(p);
+function curBtns(){document.querySelectorAll("#curBar [data-disp]").forEach(b=>b.classList.toggle("on",b.dataset.disp===disp))}
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 async function load(){
  const {data,error}=await sb.from("listings").select("*").order("created_at",{ascending:false});
  if(error){$("products").innerHTML='<div class="empty"><strong>Impossible de charger les annonces</strong><p>Vérifie ta connexion et réessaie.</p></div>';return}
- listings=data;const {data:vs}=await sb.from("verified_sellers").select("user_id");verified=new Set((vs||[]).map(r=>r.user_id));render();
+ listings=data;const {data:vs}=await sb.from("verified_sellers").select("user_id");verified=new Set((vs||[]).map(r=>r.user_id));const {data:rs}=await sb.from("app_settings").select("value").eq("key","usd_htg").maybeSingle();if(rs&&Number(rs.value)>0)rate=Number(rs.value);render();
 }
 async function loadFavs(){
  favs=new Set();
@@ -150,7 +162,8 @@ function statsBox(){
  }else st.hidden=true;
 }
 function render(){
- statsBox();
+ statsBox();curBtns();
+ $("rateNote").textContent="Conversion approximative · Taux KONEKTA : 1 $ = "+rate+" G";
  const q=$("search").value.trim().toLowerCase();
  const data=listings.filter(p=>(category==="Tous"||p.category===category)&&(!q||(p.name+" "+p.category+" "+p.location+" "+(p.description||"")).toLowerCase().includes(q))&&(view!=="favorites"||favs.has(p.id))&&(view!=="me"||(user&&p.user_id===user.id)));
  $("sectionTitle").textContent=view==="favorites"?"Mes favoris":view==="me"?"Mes annonces":q?"Résultats de recherche":"À découvrir";
@@ -158,7 +171,7 @@ function render(){
  $("count").textContent=data.length+" annonce"+(data.length>1?"s":"");
  $("products").innerHTML=data.length?data.map(p=>{
   const mine=user&&p.user_id===user.id;
-  return `<article class="card"><div class="photo">${p.image_url?`<img src="${esc(p.image_url)}" alt="" loading="lazy">`:esc(EMO[p.category]||"📦")}<button class="fav" data-fav="${p.id}" aria-label="Favori">${favs.has(p.id)?"❤️":"♡"}</button></div><div class="card-body"><div class="name">${esc(p.name)}</div><div class="price">${money(p.price)}</div><div class="location">📍 ${esc(p.location)}</div>${verified.has(p.user_id)?'<span class="vbadge">✔ Vendeur vérifié</span>':""}${p.description?`<p class="small">${esc(p.description)}</p>`:""}<button class="contact" data-contact="${p.id}">Contacter le vendeur</button>${mine?`<button class="contact" style="background:var(--green2)" data-edit="${p.id}">Modifier mon annonce</button><button class="contact del" data-del="${p.id}">Supprimer mon annonce</button>`:`<button class="mini" data-rep="${p.id}">Signaler cette annonce</button>`}</div></article>`}).join(""):
+  return `<article class="card"><div class="photo">${p.image_url?`<img src="${esc(p.image_url)}" alt="" loading="lazy">`:esc(EMO[p.category]||"📦")}<button class="fav" data-fav="${p.id}" aria-label="Favori">${favs.has(p.id)?"❤️":"♡"}</button></div><div class="card-body"><div class="name">${esc(p.name)}</div><div class="price">${shown(p)}</div>${sub(p)?`<div class="small" style="margin:-3px 0 5px">${sub(p)}</div>`:""}<div class="location">📍 ${esc(p.location)}</div>${verified.has(p.user_id)?'<span class="vbadge">✔ Vendeur vérifié</span>':""}${p.description?`<p class="small">${esc(p.description)}</p>`:""}<button class="contact" data-contact="${p.id}">Contacter le vendeur</button>${mine?`<button class="contact" style="background:var(--green2)" data-edit="${p.id}">Modifier mon annonce</button><button class="contact del" data-del="${p.id}">Supprimer mon annonce</button>`:`<button class="mini" data-rep="${p.id}">Signaler cette annonce</button>`}</div></article>`}).join(""):
  `<div class="empty"><div style="font-size:30px">🔎</div><strong>Aucune annonce trouvée</strong><p>${view==="home"?"Sois le premier à publier une annonce !":"Rien à afficher ici pour l'instant."}</p></div>`;
 }
 
@@ -208,13 +221,13 @@ $("products").addEventListener("click",async e=>{
  if(c){
   const p=listings.find(x=>x.id===Number(c.dataset.contact));if(!p)return;
   const num=p.contact.replace(/\D/g,"");
-  const msg=encodeURIComponent("Bonjour, je vous contacte au sujet de votre annonce KONEKTA : "+p.name+" ("+money(p.price)+"). Est-elle disponible ?");
+  const msg=encodeURIComponent("Bonjour, je vous contacte au sujet de votre annonce KONEKTA : "+p.name+" ("+money(p)+"). Est-elle disponible ?");
   window.open("https://wa.me/"+num+"?text="+msg,"_blank");return;
  }
  const ed=e.target.closest("[data-edit]");
  if(ed){
   const p=listings.find(x=>x.id===Number(ed.dataset.edit));if(!p)return;
-  editing=p;$("pname").value=p.name;$("pcat").value=p.category;$("pprice").value=p.price;$("plocation").value=p.location;$("pcontact").value=p.contact;$("pdesc").value=p.description||"";$("pphoto").value="";
+  editing=p;$("pname").value=p.name;$("pcat").value=p.category;$("pcur").value=p.currency||"HTG";$("pprice").value=p.price;$("plocation").value=p.location;$("pcontact").value=p.contact;$("pdesc").value=p.description||"";$("pphoto").value="";
   $("modalTitle").textContent="Modifier mon annonce";$("saveBtn").textContent="Enregistrer";modal.classList.add("open");return;
  }
  const d=e.target.closest("[data-del]");
@@ -234,6 +247,7 @@ $("products").addEventListener("click",async e=>{
  }
 });
 $("chips").addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(!b)return;category=b.dataset.cat;document.querySelectorAll(".chip[data-cat]").forEach(x=>x.classList.toggle("active",x===b));render()});
+$("curBar").addEventListener("click",e=>{const b=e.target.closest("[data-disp]");if(!b)return;disp=b.dataset.disp;try{localStorage.setItem("kdisp",disp)}catch(x){}render()});
 $("search").addEventListener("input",render);$("searchBtn").addEventListener("click",render);
 
 const modal=$("modal");
@@ -253,7 +267,7 @@ $("listingForm").addEventListener("submit",async e=>{
    if(ue)throw ue;
    image_url=sb.storage.from("listing-photos").getPublicUrl(path).data.publicUrl;
   }
-  const row={name:$("pname").value.trim(),category:$("pcat").value,price:Number($("pprice").value),location:$("plocation").value.trim(),contact:$("pcontact").value.trim(),description:$("pdesc").value.trim()||null};
+  const row={name:$("pname").value.trim(),category:$("pcat").value,currency:$("pcur").value,price:Number($("pprice").value),location:$("plocation").value.trim(),contact:$("pcontact").value.trim(),description:$("pdesc").value.trim()||null};
   if(image_url)row.image_url=image_url;
   const {error}=editing?await sb.from("listings").update(row).eq("id",editing.id):await sb.from("listings").insert(row);
   if(error)throw error;
