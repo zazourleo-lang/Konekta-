@@ -76,6 +76,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px 0}
     <button class="chip" data-cat="Beauté">💄 Beauté</button>
     <button class="chip" data-cat="Autres">📦 Autres</button>
   </div>
+  <div class="note" id="stats" hidden style="margin-bottom:12px;background:#eef5ff;border-color:#cfe0f7;color:#123c35;line-height:1.7"></div>
   <div class="grid" id="products"></div>
   <div class="note" style="margin-top:18px">Vérifie toujours le produit, le vendeur et les conditions de paiement avant tout achat. Rencontre-toi dans un lieu sûr.</div>
   <div class="note" style="margin-top:12px;background:#e9f2ed;border-color:#cfe3d8;color:#123c35;text-align:center"><strong>Besoin d'aide ?</strong><br>Une question, un problème ou une idée ? Écris-nous sur WhatsApp.<a class="contact" style="display:block;text-decoration:none;text-align:center" href="https://wa.me/50941444209?text=Bonjour%20KONEKTA%2C%20j%27ai%20besoin%20d%27aide" target="_blank" rel="noopener">Sipò · Support WhatsApp</a></div>
@@ -123,7 +124,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px 0}
 const sb=supabase.createClient("https://sywzvrtsbletixoxrjjt.supabase.co","sb_publishable_lkchHYAps-lYnGxZiVeg9w_DiXUEPnk");
 const $=id=>document.getElementById(id);
 const EMO={"Téléphones":"📱","Mode":"👟","Maison":"🏠","Électronique":"🎧","Beauté":"💄","Autres":"📦"};
-let user=null,listings=[],favs=new Set(),category="Tous",view="home",mode="login",editing=null,verified=new Set();
+let user=null,listings=[],favs=new Set(),category="Tous",view="home",mode="login",editing=null,verified=new Set(),stats=null;
 const money=n=>new Intl.NumberFormat("fr-FR").format(n)+" G";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -136,7 +137,20 @@ async function loadFavs(){
  favs=new Set();
  if(user){const {data}=await sb.from("favorites").select("listing_id");(data||[]).forEach(r=>favs.add(r.listing_id))}
 }
+async function loadStats(){
+ if(!user){stats=null;render();return}
+ const {data,error}=await sb.rpc("admin_stats");
+ stats=error?null:data;render();
+}
+function statsBox(){
+ const st=$("stats");
+ if(view==="me"&&stats){
+  st.hidden=false;
+  st.innerHTML=`<strong>📊 Statistiques KONEKTA (visibles par toi seul)</strong><br>👥 Comptes : <b>${stats.comptes}</b> · 🛒 Vendeurs : <b>${stats.vendeurs}</b> · 🔎 Acheteurs (sans annonce) : <b>${stats.comptes-stats.vendeurs}</b><br>📦 Annonces : <b>${stats.annonces}</b> · 🆕 Nouveaux (7 j) : <b>${stats.nouveaux_7j}</b> · 🟢 Actifs (7 j) : <b>${stats.actifs_7j}</b><br>✔ Vérifiés : <b>${stats.verifies}</b> · 🚩 Signalements : <b>${stats.signalements}</b>`;
+ }else st.hidden=true;
+}
 function render(){
+ statsBox();
  const q=$("search").value.trim().toLowerCase();
  const data=listings.filter(p=>(category==="Tous"||p.category===category)&&(!q||(p.name+" "+p.category+" "+p.location+" "+(p.description||"")).toLowerCase().includes(q))&&(view!=="favorites"||favs.has(p.id))&&(view!=="me"||(user&&p.user_id===user.id)));
  $("sectionTitle").textContent=view==="favorites"?"Mes favoris":view==="me"?"Mes annonces":q?"Résultats de recherche":"À découvrir";
@@ -172,10 +186,10 @@ $("authForm").addEventListener("submit",async e=>{
 $("logout").onclick=async()=>{await sb.auth.signOut();view="home";setNav("home")};
 sb.auth.onAuthStateChange((_e,s)=>{
  user=s?s.user:null;
- setTimeout(async()=>{await loadFavs();render()},0);
+ setTimeout(async()=>{await loadFavs();render();loadStats()},0);
 });
 
-function setNav(v){view=v;document.querySelectorAll(".navbtn[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===v));render()}
+function setNav(v){view=v;if(v==="me")loadStats();document.querySelectorAll(".navbtn[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===v));render()}
 document.querySelectorAll(".navbtn[data-view]").forEach(b=>b.addEventListener("click",()=>{
  if(b.dataset.view!=="home"&&!user){openAuth();return}
  setNav(b.dataset.view);
