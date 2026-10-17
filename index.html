@@ -29,13 +29,6 @@ header{background:var(--green);color:white;padding:18px 16px 22px;border-radius:
 .cur{max-width:900px;margin:12px auto 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:#d8e6df}
 .cur button{border:1px solid #ffffff40;background:transparent;color:#fff;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700}
 .cur button.on{background:var(--orange);color:#33230f;border-color:var(--orange)}
-.lang-wrap{position:relative;margin-left:auto}
-.lang-btn{border:1px solid #ffffff40;background:transparent;color:#fff;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700}
-.lang-menu{display:none;position:absolute;right:0;top:110%;background:#fff;color:var(--ink);border-radius:12px;box-shadow:0 8px 24px #0003;overflow:hidden;min-width:130px;z-index:20}
-.lang-menu.open{display:block}
-.lang-menu button{display:block;width:100%;text-align:left;border:0;background:#fff;color:var(--ink);padding:10px 14px;font-size:13px;font-weight:600}
-.lang-menu button:hover{background:#eef2ee}
-.lang-menu button.on{background:#e9f2ed;color:var(--green)}
 main{max-width:900px;margin:0 auto;padding:18px 14px 90px}
 .section-head{display:flex;justify-content:space-between;align-items:center;margin:7px 0 12px;gap:8px}
 h2{font-size:19px;margin:0}
@@ -79,74 +72,61 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px 0}
 </head>
 <body>
 <header>
-<div class="top"><div class="logo">KONEK<span>TA</span></div><div class="badge" data-i18n="badge">🇭🇹 Le marché haïtien</div></div>
-<div class="hero"><h1 data-i18n="heroTitle">Ce que tu cherches, près ou loin.</h1><p data-i18n="heroSub">Découvre des produits proposés par des vendeurs en Haïti.</p></div>
-<div class="search-wrap"><input id="search" data-i18n-ph="searchPh" placeholder="Ex. téléphone, chaussures…" aria-label="Rechercher un produit"><button id="searchBtn" data-i18n="searchBtn">Chercher</button></div>
-<div class="cur" id="curBar">
-<span data-i18n="pricesIn">Prix affichés en :</span>
-<button data-disp="HTG" data-i18n="htgLabel">G · Gourdes</button>
-<button data-disp="USD" data-i18n="usdLabel">$ · Dollars</button>
-<div class="lang-wrap">
-<button class="lang-btn" id="langBtn" aria-label="Langue">🌐</button>
-<div class="lang-menu" id="langMenu">
-<button data-lang="fr">🇫🇷 Français</button>
-<button data-lang="en">🇬🇧 English</button>
-<button data-lang="es">🇪🇸 Español</button>
-<button data-lang="ht">🇭🇹 Kreyòl</button>
-</div>
-</div>
-</div>
+<div class="top"><div class="logo">KONEK<span>TA</span></div><div class="badge">🇭🇹 Le marché haïtien</div></div>
+<div class="hero"><h1>Ce que tu cherches, près ou loin.</h1><p>Découvre des produits proposés par des vendeurs en Haïti.</p></div>
+<div class="search-wrap"><input id="search" placeholder="Ex. téléphone, chaussures…" aria-label="Rechercher un produit"><button id="searchBtn">Chercher</button></div>
+<div class="cur" id="curBar"><span>Prix affichés en :</span><button data-disp="HTG">G · Gourdes</button><button data-disp="USD">$ · Dollars</button></div>
 </header>
 <main>
-<div class="section-head"><h2 id="sectionTitle" data-i18n="sectionDiscover">À découvrir</h2><span class="small" id="count"></span><button class="chip" id="logout" hidden data-i18n="logout">Se déconnecter</button></div>
+<div class="section-head"><h2 id="sectionTitle">À découvrir</h2><span class="small" id="count"></span><button class="chip" id="logout" hidden>Se déconnecter</button></div>
 <div class="chips" id="chips">
-<button class="chip active" data-cat="Tous" data-i18n="catAll">✨ Tout</button>
-<button class="chip" data-cat="Téléphones" data-i18n="catPhones">📱 Téléphones</button>
-<button class="chip" data-cat="Mode" data-i18n="catFashion">👟 Mode</button>
-<button class="chip" data-cat="Maison" data-i18n="catHome">🏠 Maison</button>
-<button class="chip" data-cat="Électronique" data-i18n="catElectronics">🎧 Électronique</button>
-<button class="chip" data-cat="Beauté" data-i18n="catBeauty">💄 Beauté</button>
-<button class="chip" data-cat="Autres" data-i18n="catOthers">📦 Autres</button>
+<button class="chip active" data-cat="Tous">✨ Tout</button>
+<button class="chip" data-cat="Téléphones">📱 Téléphones</button>
+<button class="chip" data-cat="Mode">👟 Mode</button>
+<button class="chip" data-cat="Maison">🏠 Maison</button>
+<button class="chip" data-cat="Électronique">🎧 Électronique</button>
+<button class="chip" data-cat="Beauté">💄 Beauté</button>
+<button class="chip" data-cat="Autres">📦 Autres</button>
 </div>
 <div class="note" id="stats" hidden style="margin-bottom:12px;background:#eef5ff;border-color:#cfe0f7;color:#123c35;line-height:1.7"></div>
 <div class="grid" id="products"></div>
-<div class="note" style="margin-top:18px" data-i18n="warnNote">Vérifie toujours le produit, le vendeur et les conditions de paiement avant tout achat. Rencontre-toi dans un lieu sûr.</div>
-<div class="note" style="margin-top:12px;background:#e9f2ed;border-color:#cfe3d8;color:#123c35;text-align:center"><strong data-i18n="helpTitle">Besoin d'aide ?</strong><br><span data-i18n="helpText">Une question, un problème ou une idée ? Écris-nous sur WhatsApp.</span><a class="contact" style="display:block;text-decoration:none;text-align:center" href="https://wa.me/50941444209?text=Bonjour%20KONEKTA%2C%20j%27ai%20besoin%20d%27aide" target="_blank" rel="noopener" data-i18n="supportBtn">Sipò · Support WhatsApp</a></div>
+<div class="note" style="margin-top:18px">Vérifie toujours le produit, le vendeur et les conditions de paiement avant tout achat. Rencontre-toi dans un lieu sûr.</div>
+<div class="note" style="margin-top:12px;background:#e9f2ed;border-color:#cfe3d8;color:#123c35;text-align:center"><strong>Besoin d'aide ?</strong><br>Une question, un problème ou une idée ? Écris-nous sur WhatsApp.<a class="contact" style="display:block;text-decoration:none;text-align:center" href="https://wa.me/50941444209?text=Bonjour%20KONEKTA%2C%20j%27ai%20besoin%20d%27aide" target="_blank" rel="noopener">Sipò · Support WhatsApp</a></div>
 <p class="small" id="rateNote" style="text-align:center;margin:14px 0 0"></p>
-<footer data-i18n="footer">KONEKTA · Une idée qui commence ici.</footer>
+<footer>KONEKTA · Une idée qui commence ici.</footer>
 </main>
 <nav class="bottom">
-<button class="navbtn active" data-view="home"><span>⌂</span><span data-i18n="navHome">Accueil</span></button>
-<button class="navbtn" data-view="favorites"><span>♡</span><span data-i18n="navFavorites">Favoris</span></button>
-<button class="navbtn" id="addBtn"><span>＋</span><span data-i18n="navPublish">Publier</span></button>
-<button class="navbtn" data-view="me"><span>☺</span><span data-i18n="navMe">Moi</span></button>
+<button class="navbtn active" data-view="home"><span>⌂</span>Accueil</button>
+<button class="navbtn" data-view="favorites"><span>♡</span>Favoris</button>
+<button class="navbtn" id="addBtn"><span>＋</span>Publier</button>
+<button class="navbtn" data-view="me"><span>☺</span>Moi</button>
 </nav>
 <div class="modal" id="authModal" role="dialog" aria-modal="true">
 <div class="sheet">
-<div class="sheet-head"><h2 id="authTitle" data-i18n="authTitleLogin">Connexion</h2><button class="close" id="closeAuth" aria-label="Fermer">×</button></div>
+<div class="sheet-head"><h2 id="authTitle">Connexion</h2><button class="close" id="closeAuth" aria-label="Fermer">×</button></div>
 <form id="authForm">
-<label for="aemail" data-i18n="email">E-mail</label><input class="field" id="aemail" type="email" required autocomplete="email">
-<label for="apass" data-i18n="password">Mot de passe (8 caractères minimum)</label><input class="field" id="apass" type="password" required minlength="8" autocomplete="current-password">
-<button class="primary" id="authBtn" type="submit" data-i18n="loginBtn">Se connecter</button>
+<label for="aemail">E-mail</label><input class="field" id="aemail" type="email" required autocomplete="email">
+<label for="apass">Mot de passe (8 caractères minimum)</label><input class="field" id="apass" type="password" required minlength="8" autocomplete="current-password">
+<button class="primary" id="authBtn" type="submit">Se connecter</button>
 <p class="small" id="amsg" style="min-height:18px"></p>
-<button class="link" type="button" id="switchAuth" data-i18n="switchToSignup">Pas de compte ? Créer un compte</button>
+<button class="link" type="button" id="switchAuth">Pas de compte ? Créer un compte</button>
 </form>
 </div>
 </div>
 <div class="modal" id="modal" role="dialog" aria-modal="true">
 <div class="sheet">
-<div class="sheet-head"><h2 id="modalTitle" data-i18n="modalPublishTitle">Publier une annonce</h2><button class="close" id="closeModal" aria-label="Fermer">×</button></div>
+<div class="sheet-head"><h2 id="modalTitle">Publier une annonce</h2><button class="close" id="closeModal" aria-label="Fermer">×</button></div>
 <form id="listingForm">
-<label for="pname" data-i18n="productName">Nom du produit *</label><input class="field" id="pname" required minlength="2" maxlength="70" placeholder="Ex. Téléphone Samsung">
-<label for="pcat" data-i18n="category">Catégorie *</label><select class="field" id="pcat" required><option value="Téléphones">Téléphones</option><option value="Mode">Mode</option><option value="Maison">Maison</option><option value="Électronique">Électronique</option><option value="Beauté">Beauté</option><option value="Autres">Autres</option></select>
-<label for="pcur" data-i18n="currency">Monnaie *</label><select class="field" id="pcur"><option value="HTG">Gourdes (G)</option><option value="USD">Dollars US ($)</option></select>
-<label for="pprice" data-i18n="price">Prix *</label><input class="field" id="pprice" required type="number" min="0.01" step="0.01" placeholder="Ex. 12500 en gourdes ou 25 en dollars">
-<label for="plocation" data-i18n="sellerZone">Zone du vendeur *</label><input class="field" id="plocation" required minlength="2" maxlength="60" placeholder="Ex. Nerette, Pétion-Ville">
-<label for="pcontact" data-i18n="contact">Contact (WhatsApp ou téléphone) *</label><input class="field" id="pcontact" required minlength="5" maxlength="30" placeholder="Ex. +509 …">
-<label for="pdesc" data-i18n="description">Description</label><textarea class="field" id="pdesc" maxlength="350" placeholder="État, taille, détails utiles…"></textarea>
-<label for="pphoto" data-i18n="photo">Photo</label><input class="field" id="pphoto" type="file" accept="image/*">
-<button class="primary" id="saveBtn" type="submit" data-i18n="publishBtn">Publier l'annonce</button>
-<p class="small" data-i18n="publishNote">Ton annonce sera visible par tous les utilisateurs de KONEKTA, avec ton numéro de contact.</p>
+<label for="pname">Nom du produit *</label><input class="field" id="pname" required minlength="2" maxlength="70" placeholder="Ex. Téléphone Samsung">
+<label for="pcat">Catégorie *</label><select class="field" id="pcat" required><option>Téléphones</option><option>Mode</option><option>Maison</option><option>Électronique</option><option>Beauté</option><option>Autres</option></select>
+<label for="pcur">Monnaie *</label><select class="field" id="pcur"><option value="HTG">Gourdes (G)</option><option value="USD">Dollars US ($)</option></select>
+<label for="pprice">Prix *</label><input class="field" id="pprice" required type="number" min="0.01" step="0.01" placeholder="Ex. 12500 en gourdes ou 25 en dollars">
+<label for="plocation">Zone du vendeur *</label><input class="field" id="plocation" required minlength="2" maxlength="60" placeholder="Ex. Nerette, Pétion-Ville">
+<label for="pcontact">Contact (WhatsApp ou téléphone) *</label><input class="field" id="pcontact" required minlength="5" maxlength="30" placeholder="Ex. +509 …">
+<label for="pdesc">Description</label><textarea class="field" id="pdesc" maxlength="350" placeholder="État, taille, détails utiles…"></textarea>
+<label for="pphoto">Photo</label><input class="field" id="pphoto" type="file" accept="image/*">
+<button class="primary" id="saveBtn" type="submit">Publier l'annonce</button>
+<p class="small">Ton annonce sera visible par tous les utilisateurs de KONEKTA, avec ton numéro de contact.</p>
 </form>
 </div>
 </div>
@@ -155,73 +135,135 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px 0}
 const sb=supabase.createClient("https://sywzvrtsbletixoxrjjt.supabase.co","sb_publishable_lkchHYAps-lYnGxZiVeg9w_DiXUEPnk");
 const $=id=>document.getElementById(id);
 const EMO={"Téléphones":"📱","Mode":"👟","Maison":"🏠","Électronique":"🎧","Beauté":"💄","Autres":"📦"};
-const T={
-fr:{
-badge:"🇭🇹 Le marché haïtien",heroTitle:"Ce que tu cherches, près ou loin.",heroSub:"Découvre des produits proposés par des vendeurs en Haïti.",searchPh:"Ex. téléphone, chaussures…",searchBtn:"Chercher",pricesIn:"Prix affichés en :",htgLabel:"G · Gourdes",usdLabel:"$ · Dollars",
-sectionDiscover:"À découvrir",sectionFavorites:"Mes favoris",sectionMine:"Mes annonces",sectionResults:"Résultats de recherche",logout:"Se déconnecter",
-catAll:"✨ Tout",catPhones:"📱 Téléphones",catFashion:"👟 Mode",catHome:"🏠 Maison",catElectronics:"🎧 Électronique",catBeauty:"💄 Beauté",catOthers:"📦 Autres",
-warnNote:"Vérifie toujours le produit, le vendeur et les conditions de paiement avant tout achat. Rencontre-toi dans un lieu sûr.",helpTitle:"Besoin d'aide ?",helpText:"Une question, un problème ou une idée ? Écris-nous sur WhatsApp.",supportBtn:"Sipò · Support WhatsApp",footer:"KONEKTA · Une idée qui commence ici.",
-navHome:"Accueil",navFavorites:"Favoris",navPublish:"Publier",navMe:"Moi",
-authTitleLogin:"Connexion",authTitleSignup:"Créer un compte",email:"E-mail",password:"Mot de passe (8 caractères minimum)",loginBtn:"Se connecter",signupBtn:"Créer mon compte",switchToSignup:"Pas de compte ? Créer un compte",switchToLogin:"Déjà un compte ? Se connecter",
-modalPublishTitle:"Publier une annonce",modalEditTitle:"Modifier mon annonce",productName:"Nom du produit *",category:"Catégorie *",currency:"Monnaie *",price:"Prix *",sellerZone:"Zone du vendeur *",contact:"Contact (WhatsApp ou téléphone) *",description:"Description",photo:"Photo",publishBtn:"Publier l'annonce",saveBtn:"Enregistrer",publishNote:"Ton annonce sera visible par tous les utilisateurs de KONEKTA, avec ton numéro de contact.",
-contactSeller:"Contacter le vendeur",editMine:"Modifier mon annonce",deleteMine:"Supprimer mon annonce",reportListing:"Signaler cette annonce",verified:"✔ Vendeur vérifié",
-emptyTitle:"Aucune annonce trouvée",emptyHome:"Sois le premier à publier une annonce !",emptyOther:"Rien à afficher ici pour l'instant.",loadError:"Impossible de charger les annonces",checkConn:"Vérifie ta connexion et réessaie.",
-countOne:"annonce",countMany:"annonces",approx:"≈ ",sellerPrice:"Prix du vendeur : ",rate:"Conversion approximative · Taux KONEKTA : 1 $ = ",
-welcome:"Bienvenue sur KONEKTA !",pleaseWait:"Un instant…",accountCreated:"Compte créé ! Ouvre l'e-mail que nous t'avons envoyé (vérifie aussi les spams) et appuie sur le lien de confirmation. Ensuite, connecte-toi.",confirmFirst:"Confirme d'abord ton e-mail (vérifie aussi les spams).",badCredentials:"E-mail ou mot de passe incorrect.",errorPrefix:"Erreur : ",
-publishing:"Publication…",published:"Annonce publiée !",updated:"Annonce modifiée !",deleteConfirm:"Supprimer cette annonce définitivement ?",reportPrompt:"Pourquoi signaler cette annonce ?",reportAlready:"Tu as déjà signalé cette annonce.",reportThanks:"Merci, l'annonce a été signalée.",
-contactMsg:"Bonjour, je vous contacte au sujet de votre annonce KONEKTA : "
-},
-en:{
-badge:"🇭🇹 Haiti's marketplace",heroTitle:"What you're looking for, near or far.",heroSub:"Discover products offered by sellers in Haiti.",searchPh:"Ex. phone, shoes…",searchBtn:"Search",pricesIn:"Prices shown in:",htgLabel:"G · Gourdes",usdLabel:"$ · Dollars",
-sectionDiscover:"Discover",sectionFavorites:"My favorites",sectionMine:"My listings",sectionResults:"Search results",logout:"Sign out",
-catAll:"✨ All",catPhones:"📱 Phones",catFashion:"👟 Fashion",catHome:"🏠 Home",catElectronics:"🎧 Electronics",catBeauty:"💄 Beauty",catOthers:"📦 Others",
-warnNote:"Always check the product, the seller and payment terms before buying. Meet in a safe place.",helpTitle:"Need help?",helpText:"A question, a problem or an idea? Message us on WhatsApp.",supportBtn:"Support · WhatsApp",footer:"KONEKTA · An idea that starts here.",
-navHome:"Home",navFavorites:"Favorites",navPublish:"Publish",navMe:"Me",
-authTitleLogin:"Sign in",authTitleSignup:"Create account",email:"Email",password:"Password (8 characters minimum)",loginBtn:"Sign in",signupBtn:"Create my account",switchToSignup:"No account? Create one",switchToLogin:"Already have an account? Sign in",
-modalPublishTitle:"Publish a listing",modalEditTitle:"Edit my listing",productName:"Product name *",category:"Category *",currency:"Currency *",price:"Price *",sellerZone:"Seller's area *",contact:"Contact (WhatsApp or phone) *",description:"Description",photo:"Photo",publishBtn:"Publish listing",saveBtn:"Save",publishNote:"Your listing will be visible to all KONEKTA users, along with your contact number.",
-contactSeller:"Contact seller",editMine:"Edit my listing",deleteMine:"Delete my listing",reportListing:"Report this listing",verified:"✔ Verified seller",
-emptyTitle:"No listings found",emptyHome:"Be the first to publish a listing!",emptyOther:"Nothing to show here yet.",loadError:"Unable to load listings",checkConn:"Check your connection and try again.",
-countOne:"listing",countMany:"listings",approx:"≈ ",sellerPrice:"Seller's price: ",rate:"Approximate conversion · KONEKTA rate: 1 $ = ",
-welcome:"Welcome to KONEKTA!",pleaseWait:"One moment…",accountCreated:"Account created! Open the email we sent you (also check spam) and click the confirmation link. Then sign in.",confirmFirst:"Please confirm your email first (also check spam).",badCredentials:"Wrong email or password.",errorPrefix:"Error: ",
-publishing:"Publishing…",published:"Listing published!",updated:"Listing updated!",deleteConfirm:"Delete this listing permanently?",reportPrompt:"Why are you reporting this listing?",reportAlready:"You already reported this listing.",reportThanks:"Thank you, the listing has been reported.",
-contactMsg:"Hello, I'm contacting you about your KONEKTA listing: "
-},
-es:{
-badge:"🇭🇹 El mercado haitiano",heroTitle:"Lo que buscas, cerca o lejos.",heroSub:"Descubre productos ofrecidos por vendedores en Haití.",searchPh:"Ej. teléfono, zapatos…",searchBtn:"Buscar",pricesIn:"Precios mostrados en:",htgLabel:"G · Gourdes",usdLabel:"$ · Dólares",
-sectionDiscover:"Descubrir",sectionFavorites:"Mis favoritos",sectionMine:"Mis anuncios",sectionResults:"Resultados de búsqueda",logout:"Cerrar sesión",
-catAll:"✨ Todo",catPhones:"📱 Teléfonos",catFashion:"👟 Moda",catHome:"🏠 Hogar",catElectronics:"🎧 Electrónica",catBeauty:"💄 Belleza",catOthers:"📦 Otros",
-warnNote:"Verifica siempre el producto, el vendedor y las condiciones de pago antes de comprar. Reúnanse en un lugar seguro.",helpTitle:"¿Necesitas ayuda?",helpText:"¿Una pregunta, un problema o una idea? Escríbenos por WhatsApp.",supportBtn:"Soporte · WhatsApp",footer:"KONEKTA · Una idea que empieza aquí.",
-navHome:"Inicio",navFavorites:"Favoritos",navPublish:"Publicar",navMe:"Yo",
-authTitleLogin:"Iniciar sesión",authTitleSignup:"Crear cuenta",email:"Correo electrónico",password:"Contraseña (mínimo 8 caracteres)",loginBtn:"Iniciar sesión",signupBtn:"Crear mi cuenta",switchToSignup:"¿Sin cuenta? Crear una",switchToLogin:"¿Ya tienes cuenta? Iniciar sesión",
-modalPublishTitle:"Publicar un anuncio",modalEditTitle:"Editar mi anuncio",productName:"Nombre del producto *",category:"Categoría *",currency:"Moneda *",price:"Precio *",sellerZone:"Zona del vendedor *",contact:"Contacto (WhatsApp o teléfono) *",description:"Descripción",photo:"Foto",publishBtn:"Publicar anuncio",saveBtn:"Guardar",publishNote:"Tu anuncio será visible para todos los usuarios de KONEKTA, con tu número de contacto.",
-contactSeller:"Contactar al vendedor",editMine:"Editar mi anuncio",deleteMine:"Eliminar mi anuncio",reportListing:"Reportar este anuncio",verified:"✔ Vendedor verificado",
-emptyTitle:"No se encontraron anuncios",emptyHome:"¡Sé el primero en publicar un anuncio!",emptyOther:"Nada que mostrar aquí por ahora.",loadError:"No se pudieron cargar los anuncios",checkConn:"Revisa tu conexión e intenta de nuevo.",
-countOne:"anuncio",countMany:"anuncios",approx:"≈ ",sellerPrice:"Precio del vendedor: ",rate:"Conversión aproximada · Tasa KONEKTA: 1 $ = ",
-welcome:"¡Bienvenido a KONEKTA!",pleaseWait:"Un momento…",accountCreated:"¡Cuenta creada! Abre el correo que te enviamos (revisa también el spam) y haz clic en el enlace de confirmación. Luego inicia sesión.",confirmFirst:"Primero confirma tu correo (revisa también el spam).",badCredentials:"Correo o contraseña incorrectos.",errorPrefix:"Error: ",
-publishing:"Publicando…",published:"¡Anuncio publicado!",updated:"¡Anuncio modificado!",deleteConfirm:"¿Eliminar este anuncio definitivamente?",reportPrompt:"¿Por qué reportas este anuncio?",reportAlready:"Ya reportaste este anuncio.",reportThanks:"Gracias, el anuncio fue reportado.",
-contactMsg:"Hola, te contacto por tu anuncio en KONEKTA: "
-},
-ht:{
-badge:"🇭🇹 Mache ayisyen an",heroTitle:"Sa w ap chèche a, toupre oswa byen lwen.",heroSub:"Dekouvri pwodwi ke vandè yo ofri nan Ayiti.",searchPh:"Egz. telefòn, soulye…",searchBtn:"Chèche",pricesIn:"Pri montre nan:",htgLabel:"G · Goud",usdLabel:"$ · Dola",
-sectionDiscover:"Dekouvri",sectionFavorites:"Favori mwen yo",sectionMine:"Anons mwen yo",sectionResults:"Rezilta rechèch",logout:"Dekonekte",
-catAll:"✨ Tout",catPhones:"📱 Telefòn",catFashion:"👟 Mòd",catHome:"🏠 Kay",catElectronics:"🎧 Elektwonik",catBeauty:"💄 Bote",catOthers:"📦 Lòt",
-warnNote:"Toujou verifye pwodwi a, vandè a ak kondisyon peman yo anvan ou achte. Rankontre w nan yon kote ki an sekirite.",helpTitle:"Bezwen èd?",helpText:"Yon kesyon, yon pwoblèm oswa yon lide? Ekri nou sou WhatsApp.",supportBtn:"Sipò · WhatsApp",footer:"KONEKTA · Yon lide ki kòmanse la.",
-navHome:"Akèy",navFavorites:"Favori",navPublish:"Pibliye",navMe:"Mwen",
-authTitleLogin:"Koneksyon",authTitleSignup:"Kreye kont",email:"Imèl",password:"Modpas (8 karaktè minimòm)",loginBtn:"Konekte",signupBtn:"Kreye kont mwen",switchToSignup:"Pa gen kont? Kreye youn",switchToLogin:"Ou gen deja yon kont? Konekte",
-modalPublishTitle:"Pibliye yon anons",modalEditTitle:"Modifye anons mwen",productName:"Non pwodwi a *",category:"Kategori *",currency:"Lajan *",price:"Pri *",sellerZone:"Zòn vandè a *",contact:"Kontak (WhatsApp oswa telefòn) *",description:"Deskripsyon",photo:"Foto",publishBtn:"Pibliye anons lan",saveBtn:"Anrejistre",publishNote:"Anons ou ap vizib pou tout itilizatè KONEKTA yo, ak nimewo kontak ou.",
-contactSeller:"Kontakte vandè a",editMine:"Modifye anons mwen",deleteMine:"Efase anons mwen",reportListing:"Siyale anons sa a",verified:"✔ Vandè verifye",
-emptyTitle:"Pa jwenn okenn anons",emptyHome:"Se ou ki premye moun ki pibliye yon anons!",emptyOther:"Pa gen anyen pou montre isit la pou kounye a.",loadError:"Pa ka chaje anons yo",checkConn:"Verifye koneksyon w epi eseye ankò.",
-countOne:"anons",countMany:"anons",approx:"≈ ",sellerPrice:"Pri vandè a: ",rate:"Konvèsyon apwoksimatif · To KONEKTA: 1 $ = ",
-welcome:"Byenveni sou KONEKTA!",pleaseWait:"Yon ti moman…",accountCreated:"Kont kreye! Louvri imèl nou voye ba ou a (gade nan spam tou) epi klike sou lyen konfimasyon an. Apre sa, konekte.",confirmFirst:"Konfime imèl ou an premye (gade nan spam tou).",badCredentials:"Imèl oswa modpas pa kòrèk.",errorPrefix:"Erè: ",
-publishing:"Ap pibliye…",published:"Anons pibliye!",updated:"Anons modifye!",deleteConfirm:"Efase anons sa a nèt?",reportPrompt:"Poukisa w ap siyale anons sa a?",reportAlready:"Ou deja siyale anons sa a.",reportThanks:"Mèsi, anons lan te siyale.",
-contactMsg:"Bonjou, m ap kontakte w konsènan anons ou sou KONEKTA: "
+let user=null,listings=[],favs=new Set(),category="Tous",view="home",mode="login",editing=null,verified=new Set(),stats=null;
+let rate=131;
+const fmt=(n,c)=>c==="USD"?"$"+new Intl.NumberFormat("fr-FR",{maximumFractionDigits:2}).format(n):new Intl.NumberFormat("fr-FR",{maximumFractionDigits:0}).format(n)+" G";
+const money=p=>fmt(p.price,p.currency||"HTG");
+let disp="HTG";try{disp=localStorage.getItem("kdisp")==="USD"?"USD":"HTG"}catch(e){}
+const shown=p=>{const c=p.currency||"HTG";return c===disp?fmt(p.price,c):"≈ "+fmt(c==="USD"?p.price*rate:p.price/rate,disp)};
+const sub=p=>(p.currency||"HTG")===disp?"":"Prix du vendeur : "+money(p);
+function curBtns(){document.querySelectorAll("#curBar [data-disp]").forEach(b=>b.classList.toggle("on",b.dataset.disp===disp))}
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function load(){
+const {data,error}=await sb.from("listings").select("*").order("created_at",{ascending:false});
+if(error){$("products").innerHTML='<div class="empty"><strong>Impossible de charger les annonces</strong><p>Vérifie ta connexion et réessaie.</p></div>';return}
+listings=data;const {data:vs}=await sb.from("verified_sellers").select("user_id");verified=new Set((vs||[]).map(r=>r.user_id));const {data:rs}=await sb.from("app_settings").select("value").eq("key","usd_htg").maybeSingle();if(rs&&Number(rs.value)>0)rate=Number(rs.value);render();
 }
-};
-let lang="fr";try{const v=localStorage.getItem("klang");if(v&&T[v])lang=v}catch(e){}
-function t(k){return (T[lang]&&T[lang][k])||T.fr[k]||k}
-function applyLang(){
-document.documentElement.lang=lang;
-document.querySelectorAll("[data-i18n]").forEach(el=>{el.textContent=t(el.dataset.i18n)});
-document.querySelectorAll("[data-i18n-ph]").forEach(el=>{el.placeholder=t(el.dataset.i18nPh)});
-document.querySelectorAll("#langMenu [data-lang]").forEach(b=>b.classList.toggle("on",b.dataset.lang===lang));
-$("modalTitle").textContent=ed
+async function loadFavs(){favs=new Set();if(user){const {data}=await sb.from("favorites").select("listing_id");(data||[]).forEach(r=>favs.add(r.listing_id))}}
+async function loadStats(){if(!user){stats=null;render();return}const {data,error}=await sb.rpc("admin_stats");stats=error?null:data;render()}
+function statsBox(){
+const st=$("stats");
+if(view==="me"&&stats){
+st.hidden=false;
+st.innerHTML=`<strong>📊 Statistiques KONEKTA (visibles par toi seul)</strong><br>👥 Comptes : <b>${stats.comptes}</b> · 🛒 Vendeurs : <b>${stats.vendeurs}</b> · 🔎 Acheteurs (sans annonce) : <b>${stats.comptes-stats.vendeurs}</b><br>📦 Annonces : <b>${stats.annonces}</b> · 🆕 Nouveaux (7 j) : <b>${stats.nouveaux_7j}</b> · 🟢 Actifs (7 j) : <b>${stats.actifs_7j}</b><br>✔ Vérifiés : <b>${stats.verifies}</b> · 🚩 Signalements : <b>${stats.signalements}</b>`;
+}else st.hidden=true;
+}
+function render(){
+statsBox();curBtns();
+$("rateNote").textContent="Conversion approximative · Taux KONEKTA : 1 $ = "+rate+" G";
+const q=$("search").value.trim().toLowerCase();
+const data=listings.filter(p=>(category==="Tous"||p.category===category)&&(!q||(p.name+" "+p.category+" "+p.location+" "+(p.description||"")).toLowerCase().includes(q))&&(view!=="favorites"||favs.has(p.id))&&(view!=="me"||(user&&p.user_id===user.id)));
+$("sectionTitle").textContent=view==="favorites"?"Mes favoris":view==="me"?"Mes annonces":q?"Résultats de recherche":"À découvrir";
+$("logout").hidden=view!=="me";
+$("count").textContent=data.length+" annonce"+(data.length>1?"s":"");
+$("products").innerHTML=data.length?data.map(p=>{
+const mine=user&&p.user_id===user.id;
+return `<article class="card"><div class="photo">${p.image_url?`<img src="${esc(p.image_url)}" alt="" loading="lazy">`:esc(EMO[p.category]||"📦")}<button class="fav" data-fav="${p.id}" aria-label="Favori">${favs.has(p.id)?"❤️":"♡"}</button></div><div class="card-body"><div class="name">${esc(p.name)}</div><div class="price">${shown(p)}</div>${sub(p)?`<div class="small" style="margin:-3px 0 5px">${sub(p)}</div>`:""}<div class="location">📍 ${esc(p.location)}</div>${verified.has(p.user_id)?'<span class="vbadge">✔ Vendeur vérifié</span>':""}${p.description?`<p class="small">${esc(p.description)}</p>`:""}<button class="contact" data-contact="${p.id}">Contacter le vendeur</button>${mine?`<button class="contact" style="background:var(--green2)" data-edit="${p.id}">Modifier mon annonce</button><button class="contact del" data-del="${p.id}">Supprimer mon annonce</button>`:`<button class="mini" data-rep="${p.id}">Signaler cette annonce</button>`}</div></article>`}).join(""): `<div class="empty"><div style="font-size:30px">🔎</div><strong>Aucune annonce trouvée</strong><p>${view==="home"?"Sois le premier à publier une annonce !":"Rien à afficher ici pour l'instant."}</p></div>`;
+}
+function openAuth(){$("amsg").textContent="";$("authModal").classList.add("open")}
+function setMode(m){mode=m;$("authTitle").textContent=m==="login"?"Connexion":"Créer un compte";$("authBtn").textContent=m==="login"?"Se connecter":"Créer mon compte";$("switchAuth").textContent=m==="login"?"Pas de compte ? Créer un compte":"Déjà un compte ? Se connecter";$("apass").autocomplete=m==="login"?"current-password":"new-password";$("amsg").textContent=""}
+$("switchAuth").onclick=()=>setMode(mode==="login"?"signup":"login");
+$("closeAuth").onclick=()=>$("authModal").classList.remove("open");
+$("authModal").onclick=e=>{if(e.target.id==="authModal")e.target.classList.remove("open")};
+$("authForm").addEventListener("submit",async e=>{
+e.preventDefault();
+const email=$("aemail").value.trim(),password=$("apass").value,btn=$("authBtn");
+btn.disabled=true;$("amsg").textContent="Un instant…";
+if(mode==="signup"){
+const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});
+if(error)$("amsg").textContent="Erreur : "+error.message;
+else if(data.session){$("authModal").classList.remove("open");$("authForm").reset();alert("Bienvenue sur KONEKTA !")}
+else $("amsg").textContent="Compte créé ! Ouvre l'e-mail que nous t'avons envoyé (vérifie aussi les spams) et appuie sur le lien de confirmation. Ensuite, connecte-toi.";
+}else{
+const {error}=await sb.auth.signInWithPassword({email,password});
+if(error)$("amsg").textContent=/not confirmed/i.test(error.message)?"Confirme d'abord ton e-mail (vérifie aussi les spams).":"E-mail ou mot de passe incorrect.";
+else{$("authModal").classList.remove("open");$("authForm").reset()}
+}
+btn.disabled=false;
+});
+$("logout").onclick=async()=>{await sb.auth.signOut();view="home";setNav("home")};
+sb.auth.onAuthStateChange((_e,s)=>{user=s?s.user:null;setTimeout(async()=>{await loadFavs();render();loadStats()},0)});
+function setNav(v){view=v;if(v==="me")loadStats();document.querySelectorAll(".navbtn[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===v));render()}
+document.querySelectorAll(".navbtn[data-view]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.view!=="home"&&!user){openAuth();return}setNav(b.dataset.view)}));
+$("products").addEventListener("click",async e=>{
+const f=e.target.closest("[data-fav]");
+if(f){
+if(!user){openAuth();return}
+const id=Number(f.dataset.fav);
+if(favs.has(id)){favs.delete(id);render();await sb.from("favorites").delete().eq("listing_id",id)}
+else{favs.add(id);render();await sb.from("favorites").insert({listing_id:id})}
+return;
+}
+const c=e.target.closest("[data-contact]");
+if(c){
+const p=listings.find(x=>x.id===Number(c.dataset.contact));if(!p)return;
+const num=p.contact.replace(/\D/g,"");
+const msg=encodeURIComponent("Bonjour, je vous contacte au sujet de votre annonce KONEKTA : "+p.name+" ("+money(p)+"). Est-elle disponible ?");
+window.open("https://wa.me/"+num+"?text="+msg,"_blank");return;
+}
+const ed=e.target.closest("[data-edit]");
+if(ed){
+const p=listings.find(x=>x.id===Number(ed.dataset.edit));if(!p)return;
+editing=p;$("pname").value=p.name;$("pcat").value=p.category;$("pcur").value=p.currency||"HTG";$("pprice").value=p.price;$("plocation").value=p.location;$("pcontact").value=p.contact;$("pdesc").value=p.description||"";$("pphoto").value="";
+$("modalTitle").textContent="Modifier mon annonce";$("saveBtn").textContent="Enregistrer";modal.classList.add("open");return;
+}
+const d=e.target.closest("[data-del]");
+if(d){
+if(!confirm("Supprimer cette annonce définitivement ?"))return;
+const old=listings.find(x=>x.id===Number(d.dataset.del));
+const {error}=await sb.from("listings").delete().eq("id",Number(d.dataset.del));
+if(error)alert("Erreur : "+error.message);else{if(old&&old.image_url)rmPhoto(old.image_url);await load()}
+return;
+}
+const r=e.target.closest("[data-rep]");
+if(r){
+if(!user){openAuth();return}
+const why=prompt("Pourquoi signaler cette annonce ?");
+if(!why||why.trim().length<3)return;
+const {error}=await sb.from("reports").insert({listing_id:Number(r.dataset.rep),reason:why.trim()});
+alert(error?(error.code==="23505"?"Tu as déjà signalé cette annonce.":"Erreur : "+error.message):"Merci, l'annonce a été signalée.");
+}
+});
+$("chips").addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(!b)return;category=b.dataset.cat;document.querySelectorAll(".chip[data-cat]").forEach(x=>x.classList.toggle("active",x===b));render()});
+$("curBar").addEventListener("click",e=>{const b=e.target.closest("[data-disp]");if(!b)return;disp=b.dataset.disp;try{localStorage.setItem("kdisp",disp)}catch(x){}render()});
+$("search").addEventListener("input",render);$("searchBtn").addEventListener("click",render);
+const modal=$("modal");
+$("addBtn").onclick=()=>{if(!user){openAuth();return}editing=null;$("listingForm").reset();$("modalTitle").textContent="Publier une annonce";$("saveBtn").textContent="Publier l'annonce";modal.classList.add("open")};
+function rmPhoto(url){const i=url.indexOf("/listing-photos/");if(i>0)sb.storage.from("listing-photos").remove([decodeURIComponent(url.slice(i+16).split("?")[0])])}
+$("closeModal").onclick=()=>modal.classList.remove("open");
+modal.onclick=e=>{if(e.target===modal)modal.classList.remove("open")};
+function shrink(file){return new Promise((ok,ko)=>{const img=new Image();img.onload=()=>{const s=Math.min(1,1000/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext("2d").drawImage(img,0,0,c.width,c.height);c.toBlob(b=>b?ok(b):ko(new Error("Photo illisible")),"image/jpeg",.8)};img.onerror=()=>ko(new Error("Photo illisible"));img.src=URL.createObjectURL(file)})}
+$("listingForm").addEventListener("submit",async e=>{
+e.preventDefault();
+const btn=e.submitter;btn.disabled=true;btn.textContent="Publication…";
+try{
+let image_url=null;const file=$("pphoto").files[0];
+if(file){const path=user.id+"/"+Date.now()+".jpg";const {error:ue}=await sb.storage.from("listing-photos").upload(path,await shrink(file),{contentType:"image/jpeg"});if(ue)throw ue;image_url=sb.storage.from("listing-photos").getPublicUrl(path).data.publicUrl;}
+const row={name:$("pname").value.trim(),category:$("pcat").value,currency:$("pcur").value,price:Number($("pprice").value),location:$("plocation").value.trim(),contact:$("pcontact").value.trim(),description:$("pdesc").value.trim()||null};
+if(image_url)row.image_url=image_url;
+const {error}=editing?await sb.from("listings").update(row).eq("id",editing.id):await sb.from("listings").insert(row);
+if(error)throw error;
+if(editing&&image_url&&editing.image_url)rmPhoto(editing.image_url);
+var was=editing;editing=null;
+e.target.reset();modal.classList.remove("open");category="Tous";
+document.querySelectorAll(".chip[data-cat]").forEach(x=>x.classList.toggle("active",x.dataset.cat==="Tous"));
+await load();setNav(was?"me":"home");
+alert(was?"Annonce modifiée !":"Annonce publiée !");
+}catch(err){alert("Erreur : "+err.message)}
+btn.disabled=false;btn.textContent=editing?"Enregistrer":"Publier l'annonce";
+});
+load();
+if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
