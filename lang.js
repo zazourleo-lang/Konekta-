@@ -125,33 +125,3 @@ setTimeout(() => {
     });
   }
 }, 1000);
-// Remplacement propre du bouton 🌐 par le menu déroulant
-document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    const vieuxBouton = document.getElementById("langBtn");
-    if (vieuxBouton) {
-      // On remplace le bouton simple par notre nouveau menu complet
-      vieuxBouton.outerHTML = `
-        <div class="lang-wrap" style="position:relative; margin-left:auto;">
-          <button class="lang-btn" id="langBtn" style="border:1px solid #ffffff40;background:transparent;color:#fff;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">🌐</button>
-          <div class="lang-menu" id="langMenu" style="display:none; position:absolute; right:0; top:110%; background:#fff; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.2); overflow:hidden; min-width:130px; z-index:20;">
-            <button onclick="changerLangue('fr')" style="display:block; width:100%; text-align:left; border:0; background:#fff; color:#172521; padding:10px 14px; font-size:13px; font-weight:600;">🇫🇷 Français</button>
-            <button onclick="changerLangue('en')" style="display:block; width:100%; text-align:left; border:0; background:#fff; color:#172521; padding:10px 14px; font-size:13px; font-weight:600;">🇬🇧 English</button>
-          </div>
-        </div>`;
-      
-      // On dit au nouveau bouton d'ouvrir le menu au clic
-      document.getElementById("langBtn").onclick = (e) => {
-        e.stopPropagation();
-        const menu = document.getElementById("langMenu");
-        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-      };
-      
-      // On ferme le menu si on clique ailleurs
-      document.addEventListener('click', () => {
-        const menu = document.getElementById("langMenu");
-        if (menu) menu.style.display = 'none';
-      });
-    }
-  }, 1000); // On attend 1 seconde que la page charge
-});
