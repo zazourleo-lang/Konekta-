@@ -103,3 +103,25 @@ setTimeout(() => {
     };
   }
 }, 1000);
+// Création du menu déroulant pour les langues
+setTimeout(() => {
+  if (!document.getElementById("langMenu")) {
+    const menuHtml = `
+      <div class="lang-menu" id="langMenu" style="display:none; position:absolute; right:10px; top:60px; background:white; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2); z-index:1000; overflow:hidden; min-width:140px;">
+        <button onclick="changerLangue('fr')" style="display:block; width:100%; border:0; padding:12px; text-align:left; font-size:14px; background:none;">🇫🇷 Français</button>
+        <button onclick="changerLangue('en')" style="display:block; width:100%; border:0; padding:12px; text-align:left; font-size:14px; background:none;">🇬🇧 English</button>
+      </div>`;
+    document.body.insertAdjacentHTML('beforeend', menuHtml);
+    
+    // Gérer le clic sur le bouton planète
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('#langBtn')) {
+        const menu = document.getElementById('langMenu');
+        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+      } else {
+        const menu = document.getElementById('langMenu');
+        if (menu) menu.style.display = 'none';
+      }
+    });
+  }
+}, 1000);
