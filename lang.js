@@ -103,12 +103,4 @@ setTimeout(() => {
     };
   }
 }, 1000);
-// Remettre le bouton de langue qui fonctionne
-setInterval(() => {
-  const curBar = document.getElementById("curBar");
-  if (curBar && !document.getElementById("langBtn")) {
-    const langHtml = '<div class="lang-wrap" style="margin-left:auto;"><button class="lang-btn" id="langBtn" style="border:1px solid #ffffff40;background:transparent;color:#fff;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">🌐</button></div>';
-    curBar.insertAdjacentHTML('beforeend', langHtml);
-    document.getElementById("langBtn").onclick = () => { changerLangue(langueActuelle === "fr" ? "en" : "fr"); };
-  }
-}, 500);
+
