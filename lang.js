@@ -90,3 +90,25 @@ setInterval(() => {
     document.getElementById("langBtn").onclick = () => { changerLangue(langueActuelle === "fr" ? "en" : "fr"); };
   }
 }, 500);
+// Affichage des signalements pour l'admin
+setTimeout(() => {
+  if (typeof loadStats === "function") {
+    const originalLoadStats = loadStats;
+    window.loadStats = async function() {
+      await originalLoadStats();
+      const statsBox = document.getElementById("stats");
+      if (statsBox && !statsBox.hidden) {
+        // On ajoute la liste des signalements en bas de la carte
+        const { data } = await sb.from("reports").select("*").order("created_at", { ascending: false });
+        if (data && data.length > 0) {
+          let html = "<div style='margin-top:10px; border-top:1px solid #ccc; padding-top:10px'><b>🚩 Détails des signalements :</b><br>";
+          data.forEach(r => {
+            html += "• Annonce #" + r.listing_id + " : " + r.reason + "<br>";
+          });
+          html += "</div>";
+          statsBox.innerHTML += html;
+        }
+      }
+    };
+  }
+}, 1000);
