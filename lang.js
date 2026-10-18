@@ -80,3 +80,4 @@ function changerLangue(langue) {
   document.querySelectorAll("[data-rep]").forEach(el => el.textContent = traductions[langue].signaler);
   document.querySelectorAll(".vbadge").forEach(el => el.textContent = traductions[langue].verifie);
 }
+document.getElementById("langBtn").onclick = () => { changerLangue(langueActuelle === "fr" ? "en" : "fr"); };
