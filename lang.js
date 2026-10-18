@@ -103,4 +103,52 @@ setTimeout(() => {
     };
   }
 }, 1000);
+// Bouton d'aide et FAQ KONEKTA
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
+    if (!document.getElementById("helpBtn")) {
+      // 1. On crée le bouton flottant
+      const helpBtn = document.createElement("button");
+      helpBtn.id = "helpBtn";
+      helpBtn.innerHTML = "💬 Aide";
+      helpBtn.style.cssText = "position:fixed; bottom:80px; right:20px; background:#123c35; color:white; border:none; border-radius:30px; padding:12px 20px; font-size:14px; font-weight:bold; box-shadow:0 4px 12px rgba(0,0,0,0.3); z-index:9999; cursor:pointer;";
+      document.body.appendChild(helpBtn);
 
+      // 2. On crée la fenêtre des questions
+      const helpMenu = document.createElement("div");
+      helpMenu.id = "helpMenu";
+      helpMenu.style.cssText = "display:none; position:fixed; bottom:140px; right:20px; width:280px; background:white; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.2); z-index:9999; overflow:hidden; border:1px solid #e4e8e2;";
+      helpMenu.innerHTML = `
+        <div style="background:#123c35; color:white; padding:12px; font-weight:bold; font-size:14px;">❓ Comment pouvons-nous vous aider ?</div>
+        <div style="padding:10px;">
+          <button class="faq-btn" data-q="publier" style="display:block; width:100%; text-align:left; border:none; background:#f6f4ed; padding:10px; margin-bottom:8px; border-radius:8px; font-size:13px; cursor:pointer;">📝 Comment publier une annonce ?</button>
+          <button class="faq-btn" data-q="contacter" style="display:block; width:100%; text-align:left; border:none; background:#f6f4ed; padding:10px; margin-bottom:8px; border-radius:8px; font-size:13px; cursor:pointer;">📞 Comment contacter un vendeur ?</button>
+          <button class="faq-btn" data-q="paiement" style="display:block; width:100%; text-align:left; border:none; background:#f6f4ed; padding:10px; margin-bottom:8px; border-radius:8px; font-size:13px; cursor:pointer;">💳 Comment se passe le paiement ?</button>
+        </div>
+        <div id="faqAnswer" style="padding:12px; background:#e9f2ed; font-size:13px; color:#123c35; display:none;"></div>
+      `;
+      document.body.appendChild(helpMenu);
+
+      // 3. On fait fonctionner le bouton (Ouvrir/Fermer)
+      helpBtn.onclick = () => {
+        helpMenu.style.display = helpMenu.style.display === "none" ? "block" : "none";
+        document.getElementById("faqAnswer").style.display = "none"; // On cache la réponse précédente
+      };
+
+      // 4. On fait fonctionner les questions
+      document.querySelectorAll(".faq-btn").forEach(btn => {
+        btn.onclick = () => {
+          const answerDiv = document.getElementById("faqAnswer");
+          answerDiv.style.display = "block";
+          if (btn.dataset.q === "publier") {
+            answerDiv.innerHTML = "<strong>Pour publier :</strong><br>Appuyez sur le bouton <b>+ Publier</b> en bas. Remplissez le nom, le prix, et ajoutez une photo. C'est gratuit !";
+          } else if (btn.dataset.q === "contacter") {
+            answerDiv.innerHTML = "<strong>Pour contacter :</strong><br>Sur l'annonce qui vous intéresse, cliquez sur <b>Contacter le vendeur</b>. Vous serez redirigé vers WhatsApp.";
+          } else if (btn.dataset.q === "paiement") {
+            answerDiv.innerHTML = "<strong>Paiement :</strong><br>KONEKTA ne gère pas encore les paiements en ligne. Vous devez vous arranger directement avec le vendeur (MonCash, NatCash, ou en main propre).";
+          }
+        };
+      });
+    }
+  }, 1500); // On attend 1,5 seconde que le site charge
+});
