@@ -81,3 +81,12 @@ function changerLangue(langue) {
   document.querySelectorAll(".vbadge").forEach(el => el.textContent = traductions[langue].verifie);
 }
 document.getElementById("langBtn").onclick = () => { changerLangue(langueActuelle === "fr" ? "en" : "fr"); };
+// Remettre le bouton de langue après chaque mise à jour de la page
+setInterval(() => {
+  const curBar = document.getElementById("curBar");
+  if (curBar && !document.getElementById("langBtn")) {
+    const langHtml = '<div class="lang-wrap"><button class="lang-btn" id="langBtn">🌐</button></div>';
+    curBar.insertAdjacentHTML('beforeend', langHtml);
+    document.getElementById("langBtn").onclick = () => { changerLangue(langueActuelle === "fr" ? "en" : "fr"); };
+  }
+}, 500);
